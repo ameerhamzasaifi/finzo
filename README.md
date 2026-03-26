@@ -42,7 +42,7 @@ Finzo is a fully offline, open-source personal finance app built with Flutter. I
 
 ### Under the Hood
 
-- **Flutter** — Cross-platform UI framework (Android, iOS, Linux, Windows, macOS)
+- **Flutter** — Cross-platform UI framework (Android, iOS)
 - **SQLite (sqflite)** — Local database, stored as portable `.books.db` files
 - **Provider** — Reactive state management
 - **fl_chart** — Pie and bar charts for reports
