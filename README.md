@@ -73,7 +73,7 @@ Finzo stores databases in a user-accessible location:
 | Platform | Path |
 |----------|------|
 | Android | `/storage/emulated/0/Documents/finzo/` |
-| iOS / macOS | App Documents/finzo/ |
+| iOS | App Documents/finzo/ |
 
 Each finance book is a standalone `.books.db` SQLite file. Back up, share, or import them freely.
 
