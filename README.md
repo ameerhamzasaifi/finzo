@@ -81,7 +81,3 @@ Each finance book is a standalone `.books.db` SQLite file. Back up, share, or im
 
 1. [Raise an issue](https://github.com/ameerhamzasaifi/finzo/issues/new) for bugs or feature requests.
 2. Fork → branch → make changes → open a PR.
-
-## License
-
-[MIT](LICENSE)
