@@ -13,9 +13,13 @@ import '../models/investment_model.dart';
 class DatabaseService {
   static DatabaseService? _instance;
   static Database? _database;
+  static String? _currentBookName;
 
   DatabaseService._();
   static DatabaseService get instance => _instance ??= DatabaseService._();
+
+  /// The name of the currently open book
+  String? get currentBookName => _currentBookName;
 
   Future<Database> get database async {
     _database ??= await _initDatabase();
@@ -30,6 +34,26 @@ class DatabaseService {
       await dir.create(recursive: true);
     }
     return dir.path;
+  }
+
+  /// Check if onboarding is complete (marker file in finzo dir)
+  static Future<bool> isOnboarded() async {
+    final dir = await finzoDir;
+    final marker = File(p.join(dir, '.onboarded'));
+    return marker.exists();
+  }
+
+  /// Mark onboarding as complete
+  static Future<void> markOnboarded() async {
+    final dir = await finzoDir;
+    final marker = File(p.join(dir, '.onboarded'));
+    await marker.writeAsString(DateTime.now().toIso8601String());
+  }
+
+  /// Get the full path of the currently open database
+  Future<String?> get currentDbPath async {
+    if (_currentBookName == null) return null;
+    return pathForBook(_currentBookName!);
   }
 
   /// Returns the full path for a given book name
@@ -64,6 +88,7 @@ class DatabaseService {
       onCreate: _createTables,
       onUpgrade: _onUpgrade,
     );
+    _currentBookName = bookName;
   }
 
   /// Create a new book database
@@ -83,11 +108,27 @@ class DatabaseService {
     return name;
   }
 
+  /// Delete a book database by name
+  Future<void> deleteBook(String bookName) async {
+    // Don't delete the currently open book
+    if (_currentBookName == bookName && _database != null) {
+      await _database!.close();
+      _database = null;
+      _currentBookName = null;
+    }
+    final path = await pathForBook(bookName);
+    final file = File(path);
+    if (await file.exists()) {
+      await file.delete();
+    }
+  }
+
   Future<Database> _initDatabase() async {
     // Default: open first available book, or create 'default'
     final books = await listBooks();
     final bookName = books.isNotEmpty ? books.first : 'default';
     final path = await pathForBook(bookName);
+    _currentBookName = bookName;
 
     return openDatabase(
       path,
