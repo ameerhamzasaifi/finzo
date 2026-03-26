@@ -343,4 +343,48 @@ class FinanceProvider extends ChangeNotifier {
     Formatters.setCurrency(cur);
     notifyListeners();
   }
+
+  // ─── BOOK MANAGEMENT ─────────────────────────────────────────────────────
+
+  /// Current book name
+  String get currentBookName => _db.currentBookName ?? 'default';
+
+  /// List all available books
+  Future<List<String>> listBooks() => DatabaseService.listBooks();
+
+  /// Switch to a different book and reload all data
+  Future<void> switchBook(String bookName) async {
+    _isLoading = true;
+    notifyListeners();
+    await _db.openBook(bookName);
+    await _loadCurrency();
+    await _loadUserName();
+    await _loadAll();
+    await _db.processAutoEmis();
+    await _loadAll();
+    _isLoading = false;
+    notifyListeners();
+  }
+
+  /// Create a new book and switch to it
+  Future<void> createNewBook(String bookName) async {
+    _isLoading = true;
+    notifyListeners();
+    await _db.createBook(bookName);
+    await _loadCurrency();
+    await _loadUserName();
+    await _loadAll();
+    _isLoading = false;
+    notifyListeners();
+  }
+
+  /// Delete a book (cannot delete the currently active one)
+  Future<bool> deleteBook(String bookName) async {
+    if (bookName == currentBookName) return false;
+    await _db.deleteBook(bookName);
+    return true;
+  }
+
+  /// Get current database file path
+  Future<String?> get currentDbPath => _db.currentDbPath;
 }

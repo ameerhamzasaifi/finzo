@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:file_picker/file_picker.dart';
 import '../models/currency_model.dart';
 import '../providers/finance_provider.dart';
+import '../services/database_service.dart';
 import '../utils/app_theme.dart';
 
 class SettingsScreen extends StatelessWidget {
@@ -62,6 +64,12 @@ class SettingsScreen extends StatelessWidget {
             current: provider.currency,
             onChanged: (c) => provider.setCurrency(c),
           ),
+          const SizedBox(height: 24),
+
+          // ─── Database Section ─────────────────────────────────────
+          const _SectionTitle(title: 'Database'),
+          const SizedBox(height: 8),
+          _DatabaseSection(provider: provider),
           const SizedBox(height: 24),
 
           // ─── About Section ────────────────────────────────────────
@@ -148,6 +156,337 @@ class _SectionTitle extends StatelessWidget {
         fontSize: 13,
         fontWeight: FontWeight.w600,
         letterSpacing: 1,
+      ),
+    );
+  }
+}
+
+class _DatabaseSection extends StatelessWidget {
+  final FinanceProvider provider;
+  const _DatabaseSection({required this.provider});
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      color: AppTheme.cardColor,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      child: Column(
+        children: [
+          ListTile(
+            leading: Container(
+              width: 42,
+              height: 42,
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                color: AppTheme.primaryColor.withAlpha(38),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: const Icon(Icons.storage_rounded,
+                  color: AppTheme.primaryColor, size: 22),
+            ),
+            title: Text(
+              provider.currentBookName,
+              style: const TextStyle(fontWeight: FontWeight.w600),
+            ),
+            subtitle: const Text(
+              'Current book',
+              style: TextStyle(color: Colors.white54, fontSize: 12),
+            ),
+          ),
+          FutureBuilder<String?>(
+            future: provider.currentDbPath,
+            builder: (context, snap) {
+              if (!snap.hasData || snap.data == null) {
+                return const SizedBox.shrink();
+              }
+              return Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                child: Row(
+                  children: [
+                    const Icon(Icons.folder_outlined,
+                        color: Colors.white38, size: 14),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        snap.data!,
+                        style: const TextStyle(
+                            color: Colors.white38, fontSize: 11),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+          const Divider(color: Colors.white12, height: 1),
+          ListTile(
+            leading: const Icon(Icons.swap_horiz_rounded,
+                color: Colors.white54, size: 20),
+            title: const Text('Switch Book',
+                style: TextStyle(fontSize: 14)),
+            trailing:
+                const Icon(Icons.chevron_right, color: Colors.white38),
+            onTap: () => _showSwitchBookSheet(context),
+          ),
+          ListTile(
+            leading: const Icon(Icons.add_rounded,
+                color: Colors.white54, size: 20),
+            title: const Text('Create New Book',
+                style: TextStyle(fontSize: 14)),
+            trailing:
+                const Icon(Icons.chevron_right, color: Colors.white38),
+            onTap: () => _showCreateBookDialog(context),
+          ),
+          ListTile(
+            leading: const Icon(Icons.file_download_outlined,
+                color: Colors.white54, size: 20),
+            title: const Text('Import Book',
+                style: TextStyle(fontSize: 14)),
+            trailing:
+                const Icon(Icons.chevron_right, color: Colors.white38),
+            onTap: () => _importBook(context),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showSwitchBookSheet(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: AppTheme.surfaceColor,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (_) => _BookListSheet(provider: provider),
+    );
+  }
+
+  void _showCreateBookDialog(BuildContext context) {
+    final ctrl = TextEditingController();
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: AppTheme.cardColor,
+        title: const Text('Create New Book'),
+        content: TextField(
+          controller: ctrl,
+          autofocus: true,
+          style: const TextStyle(color: Colors.white),
+          textCapitalization: TextCapitalization.words,
+          decoration:
+              const InputDecoration(hintText: 'Enter book name'),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () async {
+              final name = ctrl.text.trim();
+              if (name.isNotEmpty) {
+                Navigator.pop(ctx);
+                await provider.createNewBook(name);
+                if (context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                        content:
+                            Text('Created and switched to "$name"')),
+                  );
+                }
+              }
+            },
+            child: const Text('Create & Switch'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _importBook(BuildContext context) async {
+    try {
+      final result =
+          await FilePicker.platform.pickFiles(type: FileType.any);
+      if (result == null || result.files.single.path == null) return;
+      final sourcePath = result.files.single.path!;
+      if (!sourcePath.endsWith('.books.db')) {
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+                content:
+                    Text('Please select a valid .books.db file')),
+          );
+        }
+        return;
+      }
+      final bookName =
+          await DatabaseService.importBook(sourcePath);
+      await provider.switchBook(bookName);
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+              content:
+                  Text('Imported and switched to "$bookName"')),
+        );
+      }
+    } catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Import failed: $e')),
+        );
+      }
+    }
+  }
+}
+
+class _BookListSheet extends StatefulWidget {
+  final FinanceProvider provider;
+  const _BookListSheet({required this.provider});
+
+  @override
+  State<_BookListSheet> createState() => _BookListSheetState();
+}
+
+class _BookListSheetState extends State<_BookListSheet> {
+  List<String> _books = [];
+  bool _loading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadBooks();
+  }
+
+  Future<void> _loadBooks() async {
+    final books = await widget.provider.listBooks();
+    setState(() {
+      _books = books;
+      _loading = false;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final current = widget.provider.currentBookName;
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Center(
+            child: Container(
+              width: 40,
+              height: 4,
+              decoration: BoxDecoration(
+                color: Colors.white24,
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+          ),
+          const SizedBox(height: 16),
+          const Text(
+            'Switch Book',
+            style:
+                TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
+          ),
+          const SizedBox(height: 12),
+          if (_loading)
+            const Padding(
+              padding: EdgeInsets.all(32),
+              child: CircularProgressIndicator(),
+            )
+          else if (_books.isEmpty)
+            const Padding(
+              padding: EdgeInsets.all(32),
+              child: Text('No books found',
+                  style: TextStyle(color: Colors.white54)),
+            )
+          else
+            Expanded(
+              child: ListView.builder(
+                itemCount: _books.length,
+                itemBuilder: (_, i) {
+                  final book = _books[i];
+                  final isActive = book == current;
+                  return ListTile(
+                    leading: Icon(
+                      Icons.menu_book_rounded,
+                      color: isActive
+                          ? AppTheme.primaryColor
+                          : Colors.white38,
+                    ),
+                    title: Text(
+                      book,
+                      style: TextStyle(
+                        fontWeight: isActive
+                            ? FontWeight.w700
+                            : FontWeight.w400,
+                        color: isActive
+                            ? AppTheme.primaryColor
+                            : Colors.white,
+                      ),
+                    ),
+                    trailing: isActive
+                        ? const Icon(Icons.check_circle,
+                            color: AppTheme.primaryColor, size: 20)
+                        : IconButton(
+                            icon: const Icon(Icons.delete_outline,
+                                color: Colors.white24, size: 20),
+                            onPressed: () =>
+                                _confirmDelete(context, book),
+                          ),
+                    onTap: isActive
+                        ? null
+                        : () async {
+                            Navigator.pop(context);
+                            await widget.provider.switchBook(book);
+                          },
+                  );
+                },
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+
+  void _confirmDelete(BuildContext context, String bookName) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: AppTheme.cardColor,
+        title: const Text('Delete Book?'),
+        content: Text(
+            'This will permanently delete "$bookName" and all its data.'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () async {
+              Navigator.pop(ctx);
+              final ok =
+                  await widget.provider.deleteBook(bookName);
+              if (ok) {
+                _loadBooks();
+                if (context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                        content: Text('"$bookName" deleted')),
+                  );
+                }
+              }
+            },
+            style: TextButton.styleFrom(
+                foregroundColor: AppTheme.expenseColor),
+            child: const Text('Delete'),
+          ),
+        ],
       ),
     );
   }

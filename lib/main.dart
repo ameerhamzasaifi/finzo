@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'providers/finance_provider.dart';
 import 'screens/home_screen.dart';
 import 'screens/onboarding_screen.dart';
+import 'services/database_service.dart';
 import 'utils/app_theme.dart';
 
 void main() async {
@@ -15,8 +15,7 @@ void main() async {
       statusBarIconBrightness: Brightness.light,
     ),
   );
-  final prefs = await SharedPreferences.getInstance();
-  final onboarded = prefs.getBool('onboarded') ?? false;
+  final onboarded = await DatabaseService.isOnboarded();
 
   runApp(FinzoApp(onboarded: onboarded));
 }
@@ -39,8 +38,7 @@ class _FinzoAppState extends State<FinzoApp> {
   }
 
   void _completeOnboarding() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool('onboarded', true);
+    await DatabaseService.markOnboarded();
     setState(() => _onboarded = true);
   }
 
