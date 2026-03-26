@@ -81,3 +81,13 @@ Each finance book is a standalone `.books.db` SQLite file. Back up, share, or im
 
 1. [Raise an issue](https://github.com/ameerhamzasaifi/finzo/issues/new) for bugs or feature requests.
 2. Fork → branch → make changes → open a PR.
+
+## Star History
+
+<a href="https://www.star-history.com/?repos=ameerhamzasaifi%2Ffinzo&type=date&legend=top-left">
+ <picture>
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/image?repos=ameerhamzasaifi/finzo&type=date&theme=dark&legend=bottom-right" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/image?repos=ameerhamzasaifi/finzo&type=date&legend=bottom-right" />
+   <img alt="Star History Chart" src="https://api.star-history.com/image?repos=ameerhamzasaifi/finzo&type=date&legend=bottom-right" />
+ </picture>
+</a>
