@@ -26,14 +26,43 @@ class DatabaseService {
     return _database!;
   }
 
-  /// Returns the Finzo directory inside Documents
+  /// Returns the Finzo directory inside public Documents on Android
   static Future<String> get finzoDir async {
+    if (Platform.isAndroid) {
+      final dir = Directory('/storage/emulated/0/Documents/finzo');
+      if (!await dir.exists()) {
+        await dir.create(recursive: true);
+      }
+      return dir.path;
+    }
     final docs = await getApplicationDocumentsDirectory();
     final dir = Directory(p.join(docs.path, 'finzo'));
     if (!await dir.exists()) {
       await dir.create(recursive: true);
     }
     return dir.path;
+  }
+
+  /// Migrate data from old app-internal path to new public Documents path
+  static Future<void> migrateToPublicStorage() async {
+    if (!Platform.isAndroid) return;
+    final oldDocs = await getApplicationDocumentsDirectory();
+    final oldDir = Directory(p.join(oldDocs.path, 'finzo'));
+    if (!await oldDir.exists()) return;
+    final newDir = Directory('/storage/emulated/0/Documents/finzo');
+    if (!await newDir.exists()) {
+      await newDir.create(recursive: true);
+    }
+    await for (final entity in oldDir.list()) {
+      if (entity is File) {
+        final name = p.basename(entity.path);
+        final dest = File(p.join(newDir.path, name));
+        if (!await dest.exists()) {
+          await entity.copy(dest.path);
+        }
+      }
+    }
+    await oldDir.delete(recursive: true);
   }
 
   /// Check if onboarding is complete (marker file in finzo dir)
