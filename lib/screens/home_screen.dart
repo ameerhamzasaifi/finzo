@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/finance_provider.dart';
 import '../utils/app_theme.dart';
+import 'about_screen.dart';
 import 'dashboard_screen.dart';
 import 'transactions_screen.dart';
 import 'budgets_screen.dart';
@@ -181,6 +182,18 @@ class _HomeScreenState extends State<HomeScreen> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (_) => const SettingsScreen()),
+                );
+              },
+            ),
+            _DrawerItem(
+              icon: Icons.info_rounded,
+              title: 'About',
+              subtitle: 'About Finzo',
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const AboutScreen()),
                 );
               },
             ),
