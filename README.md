@@ -15,7 +15,7 @@
 
 <br/>
 
-**Made with ❤️ by Ameer Hamza Saifi**
+
 
 </div>
 
@@ -68,7 +68,7 @@ We specialize in:
 | Area | Tools |
 |------|-------|
 | **Mobile Frameworks** | Flutter, Dart |
-| **Platforms** | Android, iOS, Web, Linux, Windows |
+| **Platforms** | Android |
 | **State Management** | Provider, Riverpod |
 | **Databases** | SQLite, Hive, Firebase (when needed) |
 | **UI/UX** | Material Design, Custom animations |
