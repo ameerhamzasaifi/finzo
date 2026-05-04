@@ -4,90 +4,149 @@
 
 <br/>
 
-<h1>Finzo</h1>
+<h1>AHS Mobile Labs</h1>
 
-**Offline Personal Finance Manager**
+**Building Privacy-Focused Mobile Solutions**
 
-[![GitHub release (latest by date)](https://img.shields.io/github/v/release/ameerhamzasaifi/finzo)](https://github.com/ameerhamzasaifi/finzo/releases)
-![Platforms](https://img.shields.io/badge/platform-android%2C%20ios-yellowgreen)
-[![License](https://img.shields.io/github/license/ameerhamzasaifi/finzo)](LICENSE)
+[![GitHub](https://img.shields.io/badge/GitHub-@ahsmobilelabs-black?logo=github)](https://github.com/ahsmobilelabs)
+[![Instagram](https://img.shields.io/badge/Instagram-@ahsmobilelabs-E4405F?logo=instagram)](https://instagram.com/ahsmobilelabs)
+[![YouTube](https://img.shields.io/badge/YouTube-@AHSMobileLabs-FF0000?logo=youtube)](https://www.youtube.com/@AHSMobileLabs)
+[![Linktree](https://img.shields.io/badge/Linktree-ahsmobilelabs-39E09B)](https://linktr.ee/ahsmobilelabs)
 
 <br/>
 
-<a href="https://github.com/ameerhamzasaifi/finzo/releases">
-  <img src="https://img.shields.io/badge/Download-Latest%20Release-blue?style=for-the-badge&logo=github" alt="Download"/>
-</a>
+**Made with ❤️ by Ameer Hamza Saifi**
 
 </div>
 
 <br/>
 
-## Finzo
+## Welcome to AHS Mobile Labs 👋
 
-Finzo is a fully offline, open-source personal finance app built with Flutter. It manages your money, tracks budgets, loans, investments, and credit cards — all stored locally on your device in SQLite. No servers, no subscriptions, no data leaves your phone.
+We are a mobile development studio focused on creating **privacy-first, offline-capable applications** for Android and iOS. Our mission is to empower users with tools that prioritize data security, transparency, and control.
 
-### Key Features
+All our projects are **open-source** and built with **Flutter** and **Dart** for maximum code reuse and maintainability.
 
-- **Dashboard**: Net balance, income vs expense summary, and recent transactions at a glance.
-- **Transactions**: Income and expense tracking with categories, search, and date-based grouping.
-- **Budgets**: Monthly category-based budgets with spending progress and over-budget alerts.
-- **Accounts**: Manage multiple bank accounts and wallets with color-coded icons.
-- **Loans & EMI**: Track 8 loan types (home, car, education, gold, etc.) with auto-EMI expense generation.
-- **Investments**: Monitor 9 asset types (stocks, mutual funds, crypto, FD, PPF, etc.) with gain/loss tracking.
-- **Credit Cards**: Track limits, utilization, billing/due dates with high-utilization warnings.
-- **Reports**: Monthly trends and category breakdowns with interactive charts.
-- **Multi-Book**: Create separate finance books for different purposes, switch or import anytime.
-- **Multi-Currency**: 15+ currencies with proper locale formatting.
-- **Works Offline**: Everything runs locally. No internet required, ever.
+---
 
-### Under the Hood
+## 🚀 Featured Projects
 
-- **Flutter** — Cross-platform UI framework (Android, iOS)
-- **SQLite (sqflite)** — Local database, stored as portable `.books.db` files
-- **Provider** — Reactive state management
-- **fl_chart** — Pie and bar charts for reports
-- **Google Fonts (Poppins)** — Clean typography
-- **Flutter Animate** — Smooth UI animations
+### Finzo — Personal Finance Manager
+**An offline, open-source finance app that puts your data in your hands.**
 
-## Setup
+Finzo is a comprehensive personal finance solution built entirely in Flutter. Manage budgets, track investments, monitor loans, and organize spending—all without connecting to the internet. Your financial data never leaves your device.
 
-### Install
+**Key Features:**
+- 📊 **Dashboard** — Net balance, income vs expense overview, recent transactions
+- 💰 **Transactions** — Income/expense tracking with smart categorization
+- 🎯 **Budgets** — Monthly budgets with spending progress and alerts
+- 💳 **Credit Cards** — Track limits, utilization, billing dates
+- 🏦 **Loans & EMI** — 8 loan types with automatic EMI tracking
+- 📈 **Investments** — 9 asset types (stocks, crypto, mutual funds, PPF, etc.)
+- 💼 **Multi-Account** — Color-coded wallet and bank account management
+- 📉 **Reports** — Interactive charts and financial trends
+- 🌍 **Multi-Currency** — 15+ currencies with proper locale formatting
+- ✈️ **Works Offline** — No internet required, ever. Everything runs locally.
 
-Download the latest build from the [releases page](https://github.com/ameerhamzasaifi/finzo/releases).
+**Technology Stack:**
+- Flutter (Android, iOS)
+- SQLite via sqflite
+- Provider for state management
+- fl_chart for visualizations
+- Google Fonts (Poppins)
 
-### Build from Source
+**Get Finzo:**
+- 📱 [Download Latest Release](https://github.com/ahsmobilelabs/finzo/releases)
+- 📖 [View on GitHub](https://github.com/ahsmobilelabs/finzo)
+
+---
+
+## 🛠 Tech Stack
+
+We specialize in:
+
+| Area | Tools |
+|------|-------|
+| **Mobile Frameworks** | Flutter, Dart |
+| **Platforms** | Android, iOS, Web, Linux, Windows |
+| **State Management** | Provider, Riverpod |
+| **Databases** | SQLite, Hive, Firebase (when needed) |
+| **UI/UX** | Material Design, Custom animations |
+| **Privacy** | On-device processing, encrypted storage |
+
+---
+
+## 🤝 Connect With Us
+
+- **Email:** [ahsmobilelabs@gmail.com](mailto:ahsmobilelabs@gmail.com)
+- **GitHub:** [@ahsmobilelabs](https://github.com/ahsmobilelabs)
+- **Instagram:** [@ahsmobilelabs](https://instagram.com/ahsmobilelabs)
+- **YouTube:** [@AHSMobileLabs](https://www.youtube.com/@AHSMobileLabs)
+- **X (Twitter):** [@ahsmobilelabs](https://twitter.com/ahsmobilelabs)
+- **Linktree:** [linktr.ee/ahsmobilelabs](https://linktr.ee/ahsmobilelabs)
+
+---
+
+## 📦 Getting Started with Finzo
+
+### Installation
+
+Download from the [releases page](https://github.com/ahsmobilelabs/finzo/releases) or build from source:
 
 ```bash
-git clone https://github.com/ameerhamzasaifi/finzo.git
+git clone https://github.com/ahsmobilelabs/finzo.git
 cd finzo
 flutter pub get
 flutter run
 ```
 
-Requires Flutter SDK with Dart `^3.11.1`.
+**Requirements:** Flutter SDK with Dart `^3.11.1`
 
-## Data & Storage
+### Data & Storage
 
-Finzo stores databases in a user-accessible location:
+Finance books are stored locally:
 
 | Platform | Path |
 |----------|------|
 | Android | `/storage/emulated/0/Documents/finzo/` |
 | iOS | App Documents/finzo/ |
 
-Each finance book is a standalone `.books.db` SQLite file. Back up, share, or import them freely.
+Each book is a portable `.books.db` SQLite file — back up, share, or import anytime.
 
-## Contributing
+---
 
-1. [Raise an issue](https://github.com/ameerhamzasaifi/finzo/issues/new) for bugs or feature requests.
-2. Fork → branch → make changes → open a PR.
+## 🤗 Contributing
 
-## Star History
+We love contributions! Here's how:
 
-<a href="https://www.star-history.com/?repos=ameerhamzasaifi%2Ffinzo&type=date&legend=top-left">
- <picture>
-   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/image?repos=ameerhamzasaifi/finzo&type=date&theme=dark&legend=bottom-right" />
-   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/image?repos=ameerhamzasaifi/finzo&type=date&legend=bottom-right" />
-   <img alt="Star History Chart" src="https://api.star-history.com/image?repos=ameerhamzasaifi/finzo&type=date&legend=bottom-right" />
- </picture>
-</a>
+1. 🐛 [Report bugs or suggest features](https://github.com/ahsmobilelabs/finzo/issues)
+2. 🍴 Fork the repository
+3. 🌿 Create a feature branch
+4. 💾 Commit your changes
+5. 🚀 Push and open a pull request
+
+---
+
+## 📜 License
+
+All projects are licensed under the [MIT License](LICENSE) — feel free to use, modify, and distribute.
+
+---
+
+## 📈 Support
+
+If you love our work:
+- ⭐ Star our repos on GitHub
+- 📢 Share with friends and colleagues
+- 💬 Follow us on social media
+- 🎁 Consider supporting our development
+
+---
+
+<div align="center">
+
+**Built with passion for privacy, transparency, and open-source principles.**
+
+Made by AHS Mobile Labs | 2024-2026
+
+</div>
